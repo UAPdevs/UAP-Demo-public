@@ -1,0 +1,23 @@
+{
+  "family": "fastapi-public-task",
+  "networkMode": "awsvpc",
+  "executionRoleArn": "arn:aws:iam::160885261934:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "fastapi-public-container",
+      "image": "160885261934.dkr.ecr.us-east-1.amazonaws.com/uap/walker-law:latest",
+      "memory": 512,
+      "cpu": 256,
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "hostPort": 80
+        }
+      ]
+    }
+  ],
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512"
+}
