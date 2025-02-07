@@ -1,0 +1,47 @@
+name: Deploy FastAPI to ECS
+
+on:
+  push:
+    branches:
+      - main # Runs only when pushing to main branch
+
+env:
+  AWS_REGION: ${{ secrets.AWS_REGION }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+  CLUSTER_NAME: ${{ secrets.CLUSTER_NAME }}
+  SERVICE_NAME: ${{ secrets.SERVICE_NAME }}
+  TASK_DEFINITION: ${{ secrets.TASK_DEFINITION }}
+
+jobs:
+  deploy:
+    name: Build & Deploy to ECS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        run: |
+          aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $ECR_REPOSITORY
+
+      - name: Build Docker Image
+        run: |
+          docker build -t $ECR_REPOSITORY:latest .
+          docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$(date +%Y%m%d%H%M%S)
+
+      - name: Push Docker Image to ECR
+        run: |
+          docker push $ECR_REPOSITORY:latest
+          docker push $ECR_REPOSITORY:$(date +%Y%m%d%H%M%S)
+
+      - name: Deploy to ECS
+        run: |
+          aws ecs update-service --cluster $CLUSTER_NAME --service $SERVICE_NAME --force-new-deployment
