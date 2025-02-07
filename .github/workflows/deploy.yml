@@ -34,13 +34,15 @@ jobs:
 
       - name: Build Docker Image
         run: |
+          TIMESTAMP=$(date +%Y%m%d%H%M%S)
           docker build -t $ECR_REPOSITORY:latest .
-          docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$(date +%Y%m%d%H%M%S)
+          docker tag $ECR_REPOSITORY:latest $ECR_REPOSITORY:$TIMESTAMP
+          echo "TIMESTAMP=$TIMESTAMP" >> $GITHUB_ENV  # Save TIMESTAMP for later steps
 
       - name: Push Docker Image to ECR
         run: |
           docker push $ECR_REPOSITORY:latest
-          docker push $ECR_REPOSITORY:$(date +%Y%m%d%H%M%S)
+          docker push $ECR_REPOSITORY:$TIMESTAMP  # Use the saved TIMESTAMP
 
       - name: Deploy to ECS
         run: |
