@@ -20,7 +20,7 @@ async def fetch_private_data():
         # Make request to the private API
         response = requests.get("http://fastapi-private-nlb-ba4365383cb6e7ff.elb.us-east-1.amazonaws.com:8000/")
         response.raise_for_status()  # Raise exception for non-200 status codes
-        return {"message": "Data fetched successfully from private API"}
+        return response
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error fetching data: {str(e)}")
 
