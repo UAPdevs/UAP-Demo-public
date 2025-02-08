@@ -24,7 +24,7 @@ async def catch_exceptions_middleware(request: Request, call_next):
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World from FastAPI, testing private subnet 2"}
+    return {"message": "Hello World from FastAPI, testing private subnet 3"}
 
 @app.get("/health")
 async def health_check():
