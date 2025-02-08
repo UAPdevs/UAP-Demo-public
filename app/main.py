@@ -8,19 +8,19 @@ app = FastAPI()
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World from FastAPI, testing private subnet"}
+    return {"message": "Hello World from FastAPI, testing private subnet 2"}
 
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
 
-@app.get("/fetch-private-data")
+@app.get("/fetch-private")
 async def fetch_private_data():
     try:
         # Make request to the private API
-        response = requests.get("http://fastapi-private-nlb-ba4365383cb6e7ff.elb.us-east-1.amazonaws.com:8000/health")
+        response = requests.get("http://fastapi-private-nlb-ba4365383cb6e7ff.elb.us-east-1.amazonaws.com:8000/")
         response.raise_for_status()  # Raise exception for non-200 status codes
-        return response.json()
+        return {"message": "Data fetched successfully from private API"}
     except requests.RequestException as e:
         raise HTTPException(status_code=500, detail=f"Error fetching data: {str(e)}")
 
