@@ -33,7 +33,7 @@ async def health_check():
 @app.get("/fetch-private")
 async def fetch_private_data():
     try:
-        response = requests.get("http://fastapi-private-nlb-ba4365383cb6e7ff.elb.us-east-1.amazonaws.com:8000/")
+        response = requests.get("http://3.236.111.53:8000/")
         response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
         return response.json() # Return the JSON response from the private API
     except requests.exceptions.RequestException as e:  # Catch network errors
